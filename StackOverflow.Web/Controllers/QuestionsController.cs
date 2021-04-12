@@ -65,5 +65,28 @@ namespace StackOverflow.Web.Controllers
             repo.AddQuestion(question, tags);
             return Redirect("/");
         }
+        [HttpPost]
+        public IActionResult Update(int id)
+        {
+            var connectionString = _connectionString;
+            var repo = new QARepository(connectionString);
+            var email = User.Identity.Name;
+            var user = repo.GetByEmail(email);
+            var question = repo.GetQuestionForId(id);
+            if (question.Likes.Any(l => l.QuestionId == question.Id))
+            {
+                return Redirect($"/questions/viewQuestion?id={id}");
+            }
+            repo.UpdateLikes(id, user);
+            return Json(id);
+
+        }
+        public IActionResult GetLikes(int id)
+        {
+            var connectionString = _connectionString;
+            var repo = new QARepository(connectionString);
+            int likes = repo.GetLikes(id);
+            return Json(likes);
+        }
     }
 }

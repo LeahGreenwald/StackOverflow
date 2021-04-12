@@ -56,7 +56,7 @@ namespace StackOverflow.Data
         public User GetById(int id)
         {
             using var context = new QADbContext(_connectionString);
-            return context.Users.FirstOrDefault(u => u.Id == id);
+            return context.Users.Include(u => u.Likes).FirstOrDefault(u => u.Id == id);
         }
         public Question GetQuestionForId(int id)
         {
@@ -67,7 +67,7 @@ namespace StackOverflow.Data
                 .Include(q => q.QuestionsTags).ThenInclude(qt => qt.Tag)
                 .FirstOrDefault(q => q.Id == id);
             question.User = GetById(question.UserId);
-            foreach(Answer answer in question.Answers)
+            foreach (Answer answer in question.Answers)
             {
                 answer.User = GetById(answer.UserId);
             }
@@ -110,6 +110,23 @@ namespace StackOverflow.Data
                 });
             }
             context.SaveChanges();
+        }
+        public void UpdateLikes(int id, User user)
+        {
+            using var context = new QADbContext(_connectionString);
+            var like = new Likes
+            {
+                QuestionId = id,
+                UserId = user.Id
+            };
+            context.Likes.Add(like);
+            context.SaveChanges();
+        }
+        public int GetLikes (int id)
+        {
+            using var context = new QADbContext(_connectionString);
+            var question = GetQuestionForId(id);
+            return question.Likes.Count;
         }
     }
 }

@@ -23,7 +23,15 @@
         <br />
         @if (User.Identity.IsAuthenticated)
         {
-            <span style="font-size: 40px;cursor: pointer;" class="oi oi-heart" id="like-question" data-question-id="1"></span>
+            if (Model.Question.Likes.Any(l => l.QuestionId == Model.Question.Id))
+            {
+                <span style="font-size: 40px;cursor: pointer;" id="like-question" class="oi oi-heart text-danger" disabled data-question-id=@Model.Question.Id></span>
+            }
+            else
+            {
+                <span style="font-size: 40px;cursor: pointer;" id="like-question" class="oi oi-heart" data-question-id=@Model.Question.Id></span>
+            }
+
         }
     </div>
 </div>
@@ -72,6 +80,10 @@ else
             </form>
         </div>
     </div>
+}
+
+@section scripts{
+    <script src="~/js/index.js"></script>
 }
 
 
