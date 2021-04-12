@@ -57,5 +57,10 @@ namespace StackOverflow.Web.Controllers
                 new ClaimsIdentity(claims, "Cookies", "user", "role"))).Wait();
             return Redirect("/home/index");
         }
+        public IActionResult LogOut()
+        {
+            HttpContext.SignOutAsync().Wait();
+            return Redirect("/");
+        }
     }
 }

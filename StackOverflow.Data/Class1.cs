@@ -24,7 +24,7 @@ namespace StackOverflow.Data
         public string Text { get; set; }
         public DateTime Date { get; set; }
         public int UserId { get; set; }
-        public User PostedBy { get; set; }
+        public User User { get; set; }
         public List<QuestionsTags> QuestionsTags { get; set; }
         public List<Likes> Likes { get; set; }
         public List<Answer> Answers { get; set; }
@@ -46,6 +46,7 @@ namespace StackOverflow.Data
     {
         public int Id { get; set; }
         public string Text { get; set; }
+        public DateTime Date { get; set; }
         public int QuestionId { get; set; }
         public Question Question { get; set; }
         public int UserId { get; set; }

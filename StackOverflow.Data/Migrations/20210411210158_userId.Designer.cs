@@ -10,8 +10,8 @@ using StackOverflow.Data;
 namespace StackOverflow.Data.Migrations
 {
     [DbContext(typeof(QADbContext))]
-    [Migration("20210411194041_qqq")]
-    partial class qqq
+    [Migration("20210411210158_userId")]
+    partial class userId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,6 +27,9 @@ namespace StackOverflow.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
@@ -178,13 +181,13 @@ namespace StackOverflow.Data.Migrations
 
             modelBuilder.Entity("StackOverflow.Data.Question", b =>
                 {
-                    b.HasOne("StackOverflow.Data.User", "User")
+                    b.HasOne("StackOverflow.Data.User", "PostedBy")
                         .WithMany("Questions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("PostedBy");
                 });
 
             modelBuilder.Entity("StackOverflow.Data.QuestionsTags", b =>

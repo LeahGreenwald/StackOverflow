@@ -26,6 +26,9 @@ namespace StackOverflow.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
@@ -75,7 +78,12 @@ namespace StackOverflow.Data.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Questions");
                 });
@@ -169,6 +177,17 @@ namespace StackOverflow.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("StackOverflow.Data.Question", b =>
+                {
+                    b.HasOne("StackOverflow.Data.User", "User")
+                        .WithMany("Questions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("StackOverflow.Data.QuestionsTags", b =>
                 {
                     b.HasOne("StackOverflow.Data.Question", "Question")
@@ -207,6 +226,8 @@ namespace StackOverflow.Data.Migrations
                     b.Navigation("Answers");
 
                     b.Navigation("Likes");
+
+                    b.Navigation("Questions");
                 });
 #pragma warning restore 612, 618
         }

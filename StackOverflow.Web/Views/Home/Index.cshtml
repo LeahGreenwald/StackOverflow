@@ -20,11 +20,11 @@
                     }
                 </div>
                 <div style="margin-top: 10px;">
-                    @question.Text
+                    @(question.Text.Length < 200 ? question.Text : question.Text.Substring(0, 200) + "...")
                 </div>
                 <span>Likes: @question.Likes.Count</span>
                 <br />
-                <span>@question.Answers.Count answer(s)</span>
+               <span>@question.Answers.Count answer(s)</span>
             </div>
         }
     </div>

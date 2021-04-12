@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StackOverflow.Data;
 using StackOverflow.Web.Models;
@@ -20,11 +21,49 @@ namespace StackOverflow.Web.Controllers
         {
             var connectionString = _connectionString;
             var repo = new QARepository(connectionString);
+            var question = repo.GetQuestionForId(id);
             var vm = new QuestionViewModel
             {
-                Question = repo.GetQuestionForId(id)
+                Question = question
             };
             return View(vm);
+        }
+        [Authorize]
+        public IActionResult AddAnswer(Answer answer)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("/");
+            }
+            var connectionString = _connectionString;
+            var repo = new QARepository(connectionString);
+            var email = User.Identity.Name;
+            answer.Date = DateTime.Now;
+            answer.UserId = repo.GetByEmail(email).Id;
+            repo.AddAnswer(answer);
+            return Redirect($"/questions/viewquestion?id={answer.QuestionId}");
+        }
+        [Authorize]
+        public IActionResult AskAQuestion()
+        {
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        public IActionResult Add(string title, string text, List<string> tags)
+        {
+            var connectionString = _connectionString;
+            var repo = new QARepository(connectionString);
+            var currentUser = repo.GetByEmail(User.Identity.Name);
+            Question question = new Question
+            {
+                Title = title,
+                Text = text,
+                Date = DateTime.Now,
+                UserId = currentUser.Id
+            };
+            repo.AddQuestion(question, tags);
+            return Redirect("/");
         }
     }
 }
